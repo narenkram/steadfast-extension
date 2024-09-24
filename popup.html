@@ -2,90 +2,19 @@
 <html>
   <head>
     <title>Steadfast Extension</title>
-    <script src="./libs/html2canvas.min.js"></script>
-    <style>
-      body {
-        width: 200px;
-        font-family: Arial, sans-serif;
-      }
-      button {
-        width: 100%;
-        padding: 10px;
-        margin: 5px 0;
-      }
-      .logo {
-        height: 30px;
-        width: 30px;
-      }
-      .toggle-container {
-        display: flex;
-        align-items: center;
-        margin: 10px 0;
-      }
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 34px;
-        height: 20px;
-        margin-right: 10px;
-      }
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: 0.4s;
-        border-radius: 34px;
-      }
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 14px;
-        width: 14px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        transition: 0.4s;
-        border-radius: 50%;
-      }
-      input:checked + .slider {
-        background-color: #2196f3;
-      }
-      input:checked + .slider:before {
-        transform: translateX(14px);
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <img src="images/extension.jpg" alt="Logo" class="logo" />
     <h1>Streak Algo Automation</h1>
-    <div class="toggle-container">
-      <label class="switch">
-        <input type="checkbox" id="automationToggle" />
-        <span class="slider round"></span>
-      </label>
-      <span id="toggleStatus">OFF</span>
-    </div>
-    <button id="refreshSignals">Refresh Signals</button>
-    <button id="capture">Capture Image</button>
-    <button id="read">Read Text</button>
-    <div id="detectedSignals">
-      <h2>Detected Signals:</h2>
-      <pre id="signalsData"></pre>
-    </div>
+
+    <button id="captureButton">Capture Screenshot</button>
     <img
-      id="capturedImage"
-      alt="Captured Image"
-      style="display: none; width: 100%; margin-top: 10px"
+      id="previewImage"
+      alt="Preview"
+      style="display: none; max-width: 100%; margin-top: 10px"
     />
+
     <script src="popup.js"></script>
   </body>
 </html>

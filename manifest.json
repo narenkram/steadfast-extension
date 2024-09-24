@@ -1,18 +1,14 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "Steadfast Extension",
   "version": "1.0",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "description": "Streak Algo Automation",
+  "permissions": ["activeTab", "<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"],
+    "persistent": false
   },
-  "action": {
+  "browser_action": {
     "default_popup": "popup.html"
-  },
-  "content_scripts": [
-    {
-      "matches": ["*://*.streak.tech/*"],
-      "js": ["content.js"]
-    }
-  ]
+  }
 }
