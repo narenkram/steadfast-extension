@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Steadfast Extension</title>
+    <style>
+      body {
+        width: 200px;
+        font-family: Arial, sans-serif;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+      }
+      .logo {
+        height: 30px;
+        width: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="images/extension.jpg" alt="Logo" class="logo" />
+    <h1>Streak Algo Automation</h1>
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="automationToggle" />
+        <span class="slider round"></span>
+      </label>
+      <span id="toggleStatus">OFF</span>
+    </div>
+    <button id="refreshSignals">Refresh Signals</button>
+    <button id="capture">Capture Image</button>
+    <button id="read">Read Text</button>
+    <div id="detectedSignals">
+      <h2>Detected Signals:</h2>
+      <pre id="signalsData"></pre>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
