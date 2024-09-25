@@ -20,7 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         ).then(({ data: { text } }) => {
           console.log("Extracted Text:", text);
-          ocrResult.textContent = "Extracted Text: " + text;
+          const extractedData = extractData(text);
+          if (extractedData) {
+            console.log("Extracted Data:", extractedData);
+            // Display extracted data in the UI
+            ocrResult.textContent = `
+              Trading Symbol: ${extractedData.tradingSymbol}
+              Month: ${extractedData.month}
+              Strike Price: ${extractedData.strikePrice}
+              Strike Type: ${extractedData.strikeType}
+            `;
+          } else {
+            console.log("No matching data found.");
+            ocrResult.textContent = "No matching data found.";
+          }
         }).catch(err => {
           console.error("Error during text extraction:", err);
           ocrResult.textContent = "Error during text extraction: " + err.message;
@@ -29,3 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+function extractData(extractedText) {
+  const match = extractedText.match(/BANKNIFTY\s+(\w+)\s+(\d+)\s+(CE|PE)/);
+  if (match) {
+    return {
+      tradingSymbol: "BANKNIFTY",
+      month: match[1],
+      strikePrice: match[2],
+      strikeType: match[3],
+    };
+  } else {
+    return null;
+  }
+}
