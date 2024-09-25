@@ -3,6 +3,7 @@
   <head>
     <title>Steadfast Extension</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
   </head>
   <body>
     <img src="images/extension.jpg" alt="Logo" class="logo" />
@@ -14,9 +15,8 @@
       alt="Preview"
       style="display: none; max-width: 100%; margin-top: 10px"
     />
+    <div id="ocrResult" style="margin-top: 10px;"></div>
 
-    <!-- Include Tesseract.js -->
-    <script src="libs/tesseract.min.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
