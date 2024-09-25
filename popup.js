@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   captureButton.addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "captureTab" }, (response) => {
       if (response && response.imageDataUrl) {
-        processImage(response.imageDataUrl);
+        preprocessImage(response.imageDataUrl);
       }
     });
   });
@@ -18,11 +18,84 @@ document.addEventListener("DOMContentLoaded", () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        processImage(e.target.result);
+        preprocessImage(e.target.result);
       };
       reader.readAsDataURL(file);
     }
   });
+
+  function preprocessImage(imageDataUrl) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+
+    img.onload = () => {
+      // Zoom in by scaling the canvas
+      const zoomFactor = 2; // Adjust this value for more or less zoom
+      canvas.width = img.width * zoomFactor;
+      canvas.height = img.height * zoomFactor;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Convert to grayscale
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = avg; // Red
+        data[i + 1] = avg; // Green
+        data[i + 2] = avg; // Blue
+      }
+
+      // Apply sharpening filter
+      sharpenImage(data, canvas.width, canvas.height);
+
+      ctx.putImageData(imageData, 0, 0);
+      const processedImageDataUrl = canvas.toDataURL();
+
+      // Now use processedImageDataUrl with Tesseract
+      processImage(processedImageDataUrl);
+    };
+
+    img.src = imageDataUrl;
+  }
+
+  function sharpenImage(data, width, height) {
+    const kernel = [
+      [0, -1, 0],
+      [-1, 5, -1],
+      [0, -1, 0],
+    ];
+
+    const output = new Uint8ClampedArray(data);
+
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        let r = 0,
+          g = 0,
+          b = 0;
+
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            const idx = ((y + ky) * width + (x + kx)) * 4;
+            r += data[idx] * kernel[ky + 1][kx + 1];
+            g += data[idx + 1] * kernel[ky + 1][kx + 1];
+            b += data[idx + 2] * kernel[ky + 1][kx + 1];
+          }
+        }
+
+        const idx = (y * width + x) * 4;
+        output[idx] = Math.min(Math.max(r, 0), 255);
+        output[idx + 1] = Math.min(Math.max(g, 0), 255);
+        output[idx + 2] = Math.min(Math.max(b, 0), 255);
+        output[idx + 3] = 255; // Alpha
+      }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      data[i] = output[i];
+    }
+  }
 
   function processImage(imageDataUrl) {
     previewImage.src = imageDataUrl;
@@ -61,8 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function extractData(extractedText) {
   const match = extractedText.match(/BANKNIFTY\s+(\w+)\s+(\d+)\s+(CE|PE)/);
-  const slMatch = extractedText.match(/SL:(\d+)/);
-  const tpMatch = extractedText.match(/TP:(\d+)/);
+  const slMatch = extractedText.match(/SL\s*([\d.]+)/); // Capture SL with decimals
+  const tpMatch = extractedText.match(/TP\s*([\d.]+)/); // Capture TP with decimals
 
   if (match) {
     return {
