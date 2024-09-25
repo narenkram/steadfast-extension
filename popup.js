@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const captureButton = document.getElementById("captureButton");
   const uploadInput = document.getElementById("uploadInput");
   const ocrResult = document.getElementById("ocrResult");
+  const filterCheckbox = document.getElementById("filterCheckbox");
 
   captureButton.addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "captureTab" }, (response) => {
@@ -37,17 +38,18 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(({ data: { text } }) => {
         console.log("Extracted Text:", text);
         const extractedData = extractData(text);
-        if (extractedData) {
+        if (filterCheckbox.checked && extractedData) {
           console.log("Extracted Data:", extractedData);
           ocrResult.textContent = `
           Trading Symbol: ${extractedData.tradingSymbol}
           Month: ${extractedData.month}
           Strike Price: ${extractedData.strikePrice}
           Strike Type: ${extractedData.strikeType}
+          SL: ${extractedData.strikeSL}
+          TP: ${extractedData.strikeTP}
         `;
         } else {
-          console.log("No matching data found.");
-          ocrResult.textContent = "No matching data found.";
+          ocrResult.textContent = text; // Display all extracted text if checkbox is unchecked
         }
       })
       .catch((err) => {
@@ -59,12 +61,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function extractData(extractedText) {
   const match = extractedText.match(/BANKNIFTY\s+(\w+)\s+(\d+)\s+(CE|PE)/);
+  const slMatch = extractedText.match(/SL:(\d+)/);
+  const tpMatch = extractedText.match(/TP:(\d+)/);
+
   if (match) {
     return {
       tradingSymbol: "BANKNIFTY",
       month: match[1],
       strikePrice: match[2],
       strikeType: match[3],
+      strikeSL: slMatch ? slMatch[1] : "N/A", // Extract SL or set to "N/A"
+      strikeTP: tpMatch ? tpMatch[1] : "N/A", // Extract TP or set to "N/A"
     };
   } else {
     return null;
