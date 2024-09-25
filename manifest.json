@@ -11,5 +11,9 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-  "content_security_policy": "script-src 'self' https://unpkg.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://unpkg.com 'wasm-unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [
+    "https://unpkg.com/tesseract.js@5.1.1/dist/worker.min.js",
+    "https://unpkg.com/tesseract.js-core@4.0.4/tesseract-core.wasm.js"
+  ]
 }
