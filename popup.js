@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const ocrResult = document.getElementById("ocrResult");
   const filterCheckbox = document.getElementById("filterCheckbox");
 
+  // Load filterCheckbox state from localStorage
+  if (localStorage.getItem("filterCheckboxState") === "true") {
+    filterCheckbox.checked = true;
+  }
+
   captureButton.addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "captureTab" }, (response) => {
       if (response && response.imageDataUrl) {
@@ -22,6 +27,11 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       reader.readAsDataURL(file);
     }
+  });
+
+  filterCheckbox.addEventListener("change", () => {
+    // Store filterCheckbox state in localStorage
+    localStorage.setItem("filterCheckboxState", filterCheckbox.checked);
   });
 
   function preprocessImage(imageDataUrl) {
