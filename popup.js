@@ -124,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (filterCheckbox.checked && extractedData) {
           console.log("Extracted Data:", extractedData);
           ocrResult.textContent = JSON.stringify(extractedData, null, 2); // Display extracted data as JSON
+        } else if (filterCheckbox.checked && !extractedData) {
+          ocrResult.textContent = "No signal found"; // Display "No signal found" if checkbox is checked and no data is found
         } else {
           ocrResult.textContent = text; // Display all extracted text if checkbox is unchecked
         }
