@@ -130,6 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
           Strike Type: ${extractedData.strikeType}
           SL: ${extractedData.strikeSL}
           TP: ${extractedData.strikeTP}
+          Order Type: ${extractedData.orderType}
+          Quantity: ${extractedData.quantity}
+          Price: ${extractedData.price}
         `;
         } else {
           ocrResult.textContent = text; // Display all extracted text if checkbox is unchecked
@@ -146,6 +149,7 @@ function extractData(extractedText) {
   const match = extractedText.match(/BANKNIFTY\s+(\w+)\s+(\d+)\s+(CE|PE)/);
   const slMatch = extractedText.match(/SL\s*([\d.]+)/); // Capture SL with decimals
   const tpMatch = extractedText.match(/TP\s*([\d.]+)/); // Capture TP with decimals
+  const orderMatch = extractedText.match(/([BS])\s+(\d+)\s+at([\d.]+)/); // Extract order data
 
   if (match) {
     return {
@@ -155,6 +159,9 @@ function extractData(extractedText) {
       strikeType: match[3],
       strikeSL: slMatch ? slMatch[1] : "N/A", // Extract SL or set to "N/A"
       strikeTP: tpMatch ? tpMatch[1] : "N/A", // Extract TP or set to "N/A"
+      orderType: orderMatch ? orderMatch[1] : "N/A", // Extract order type or set to "N/A"
+      quantity: orderMatch ? orderMatch[2] : "N/A", // Extract quantity or set to "N/A"
+      price: orderMatch ? orderMatch[3] : "N/A", // Extract price or set to "N/A"
     };
   } else {
     return null;
