@@ -123,17 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const extractedData = extractData(text);
         if (filterCheckbox.checked && extractedData) {
           console.log("Extracted Data:", extractedData);
-          ocrResult.textContent = `
-          Trading Symbol: ${extractedData.tradingSymbol}
-          Month: ${extractedData.month}
-          Strike Price: ${extractedData.strikePrice}
-          Strike Type: ${extractedData.strikeType}
-          SL: ${extractedData.strikeSL}
-          TP: ${extractedData.strikeTP}
-          Order Type: ${extractedData.orderType}
-          Quantity: ${extractedData.quantity}
-          Price: ${extractedData.price}
-        `;
+          ocrResult.textContent = JSON.stringify(extractedData, null, 2); // Display extracted data as JSON
         } else {
           ocrResult.textContent = text; // Display all extracted text if checkbox is unchecked
         }
